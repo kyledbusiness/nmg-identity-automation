@@ -55,6 +55,46 @@ until Counsel releases it in writing.
 Disabled accounts are evidence. You disable a leaver.
 You do not delete them.
 
+## Tooling
+
+Steps 1 and 2 of this procedure are implemented in
+`Scripts/Disable-NMGUser.ps1`.
+
+    .\Disable-NMGUser.ps1 -Username "hgrady" -Ticket "NMG-0211"
+
+Both parameters are mandatory. The script will not run without
+an authorising ticket number.
+
+### What the tool refuses to do
+
+The script stops, without making any change, if:
+
+- The named account does not exist.
+- The account is already disabled. Re-running would overwrite
+  the existing record of who offboarded it and when.
+- The account appears to be a service account rather than a
+  person. Those need their own procedure, starting with
+  finding an owner.
+- The ticket number is not in the form NMG-0000.
+
+### Checking before acting
+
+The script supports `-WhatIf`. Running it with that switch
+performs every check and reports what it would do, without
+changing anything.
+
+Run it with `-WhatIf` first. Every time.
+
+### What it leaves behind
+
+- Two timestamped CSV files in `Evidence/`, capturing the
+  account and its group memberships before the change.
+- A transcript in `Logs/`, recording which account was
+  actioned, under which ticket, by whom, and at what time.
+
+Steps 3 to 5 are still performed by hand. They will be added
+to this script over the remainder of the week.
+
 ---
 
 Built during the TotalThreat 30-Day Challenge in a simulated
