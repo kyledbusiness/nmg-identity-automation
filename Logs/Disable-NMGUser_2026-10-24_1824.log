@@ -1,0 +1,29 @@
+﻿**********************
+Windows PowerShell transcript start
+Start time: 20261024182458
+Username: NMG\NMG-Admin
+RunAs User: NMG\NMG-Admin
+Configuration Name: 
+Machine: NMG-DC02 (Microsoft Windows NT 10.0.26100.0)
+Host Application: C:\Windows\syswow64\WindowsPowerShell\v1.0\PowerShell_ISE.exe
+Process ID: 7452
+PSVersion: 5.1.26100.33648
+PSEdition: Desktop
+PSCompatibleVersions: 1.0, 2.0, 3.0, 4.0, 5.0, 5.1.26100.33648
+BuildVersion: 10.0.26100.33648
+CLRVersion: 4.0.30319.42000
+WSManStackVersion: 3.0
+PSRemotingProtocolVersion: 2.3
+SerializationVersion: 1.1.0.1
+**********************
+
+  DISABLE-NMGUSER
+  Target : rpace
+  Ticket : banana
+  Run by : NMG-Admin
+
+  STOP: ticket should look like NMG-0211
+**********************
+Windows PowerShell transcript end
+End time: 20261024182458
+**********************

@@ -1,0 +1,59 @@
+﻿**********************
+Windows PowerShell transcript start
+Start time: 20261024182334
+Username: NMG\NMG-Admin
+RunAs User: NMG\NMG-Admin
+Configuration Name: 
+Machine: NMG-DC02 (Microsoft Windows NT 10.0.26100.0)
+Host Application: C:\Windows\syswow64\WindowsPowerShell\v1.0\PowerShell_ISE.exe
+Process ID: 7452
+PSVersion: 5.1.26100.33648
+PSEdition: Desktop
+PSCompatibleVersions: 1.0, 2.0, 3.0, 4.0, 5.0, 5.1.26100.33648
+BuildVersion: 10.0.26100.33648
+CLRVersion: 4.0.30319.42000
+WSManStackVersion: 3.0
+PSRemotingProtocolVersion: 2.3
+SerializationVersion: 1.1.0.1
+**********************
+
+  DISABLE-NMGUSER
+  Target : rpace
+  Ticket : NMG-0212
+  Run by : NMG-Admin
+
+  All checks passed for Roland Pace
+PS>TerminatingError(Export-Csv): "Cannot find drive. A drive with the name 'Z' does not exist."
+Export-Csv : Cannot find drive. A drive with the name 'Z' does not exist.
+At C:\Scripts\Disable-NMGUser.ps1:112 char:3
++   Export-Csv "$ReportPath\$($Username)_account_$stamp.csv" `
++   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : ObjectNotFound: (Z:String) [Export-Csv], DriveNotFoundException
+    + FullyQualifiedErrorId : DriveNotFound,Microsoft.PowerShell.Commands.ExportCsvCommand
+Export-Csv : Cannot find drive. A drive with the name 'Z' does not exist.
+At C:\Scripts\Disable-NMGUser.ps1:112 char:3
++   Export-Csv "$ReportPath\$($Username)_account_$stamp.csv" `
++   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : ObjectNotFound: (Z:String) [Export-Csv], DriveNotFoundException
+    + FullyQualifiedErrorId : DriveNotFound,Microsoft.PowerShell.Commands.ExportCsvCommand
+
+>> TerminatingError(Export-Csv): "Cannot find drive. A drive with the name 'Z' does not exist."
+Export-Csv : Cannot find drive. A drive with the name 'Z' does not exist.
+At C:\Scripts\Disable-NMGUser.ps1:117 char:3
++   Export-Csv "$ReportPath\$($Username)_groups_$stamp.csv" `
++   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : ObjectNotFound: (Z:String) [Export-Csv], DriveNotFoundException
+    + FullyQualifiedErrorId : DriveNotFound,Microsoft.PowerShell.Commands.ExportCsvCommand
+Export-Csv : Cannot find drive. A drive with the name 'Z' does not exist.
+At C:\Scripts\Disable-NMGUser.ps1:117 char:3
++   Export-Csv "$ReportPath\$($Username)_groups_$stamp.csv" `
++   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : ObjectNotFound: (Z:String) [Export-Csv], DriveNotFoundException
+    + FullyQualifiedErrorId : DriveNotFound,Microsoft.PowerShell.Commands.ExportCsvCommand
+
+  Captured 2 memberships
+  STOP: no export file was written.
+**********************
+Windows PowerShell transcript end
+End time: 20261024182335
+**********************
