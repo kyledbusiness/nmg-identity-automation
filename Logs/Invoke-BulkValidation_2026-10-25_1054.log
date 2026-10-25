@@ -796,3 +796,287 @@ Offboard-NMGUser.ps1         10/25/2026 9:35:28 AM
 
 
 PS C:\nmg-identity-automation> notepad Documentation\Offboarding-Runbook.md
+PS C:\nmg-identity-automation> git status
+On branch main
+Your branch is up to date with 'origin/main'.
+
+Changes not staged for commit:
+  (use "git add <file>..." to update what will be committed)
+  (use "git restore <file>..." to discard changes in working directory)
+	modified:   Documentation/Offboarding-Runbook.md
+	modified:   Logs/Invoke-BulkValidation_2026-10-25_1054.log
+
+Untracked files:
+  (use "git add <file>..." to include in what will be committed)
+	Evidence/Rachel-approval-13Aug.txt
+	Scripts/Invoke-BulkOffboarding.ps1
+
+no changes added to commit (use "git add" and/or "git commit -a")
+PS C:\nmg-identity-automation> git add .
+git status
+
+git commit -m "Add Invoke-BulkOffboarding with atomic rollback and per-account logging. Not yet run."
+
+git push
+
+On branch main
+Your branch is up to date with 'origin/main'.
+
+Changes to be committed:
+  (use "git restore --staged <file>..." to unstage)
+	modified:   Documentation/Offboarding-Runbook.md
+	new file:   Evidence/Rachel-approval-13Aug.txt
+	modified:   Logs/Invoke-BulkValidation_2026-10-25_1054.log
+	new file:   Scripts/Invoke-BulkOffboarding.ps1
+
+Changes not staged for commit:
+  (use "git add <file>..." to update what will be committed)
+  (use "git restore <file>..." to discard changes in working directory)
+	modified:   Logs/Invoke-BulkValidation_2026-10-25_1054.log
+
+[main 796c0a6] Add Invoke-BulkOffboarding with atomic rollback and per-account logging. Not yet run.
+ 4 files changed, 1038 insertions(+)
+ create mode 100644 Evidence/Rachel-approval-13Aug.txt
+ create mode 100644 Scripts/Invoke-BulkOffboarding.ps1
+git : To https://github.com/kyledbusiness/nmg-identity-automation.git
+At line:6 char:1
++ git push
++ ~~~~~~~~
+    + CategoryInfo          : NotSpecified: (To https://gith...-automation.git:String) [], RemoteException
+    + FullyQualifiedErrorId : NativeCommandError
+git : To https://github.com/kyledbusiness/nmg-identity-automation.git
+At line:6 char:1
++ git push
++ ~~~~~~~~
+    + CategoryInfo          : NotSpecified: (To https://gith...-automation.git:String) [], RemoteException
+    + FullyQualifiedErrorId : NativeCommandError
+
+   d682202..796c0a6  main -> main
+   d682202..796c0a6  main -> main
+PS C:\nmg-identity-automation> cd C:\nmg-identity-automation
+
+# 1. The approved list is 22 accounts, nothing else
+(Import-Csv ".\Evidence\Approved.csv").Count
+#   22
+
+# 2. Rachel signed it
+Get-Content ".\Evidence\Rachel-approval-13Aug.txt"
+
+# 3. No throwaway accounts left in the directory
+Get-ADUser -Filter "SamAccountName -like 'testuser*'"
+#   returns nothing
+
+22
+From: Rachel Ito, Privacy Officer
+Date: 13 Aug 2026, 16:40
+Re: Bulk offboarding review
+
+Row 29: NO. Priya is at her desk. Remove from the list.
+Service accounts: hold, I will find the owners.
+Already disabled: skip, do not overwrite.
+
+Everything else: approved. 22 accounts.
+
+R.
+PS C:\nmg-identity-automation> Select-String -Path ".\Scripts\Invoke-BulkOffboarding.ps1" -Pattern 'BreakOn    = ""'
+
+Scripts\Invoke-BulkOffboarding.ps1:6:    [string]$BreakOn    = ""
+
+
+PS C:\nmg-identity-automation> cd C:\Scripts
+.\Invoke-BulkOffboarding.ps1 `
+    -ApprovedList "C:\nmg-identity-automation\Evidence\Approved.csv" `
+    -Ticket "NMG-0231" `
+    -WhatIf
+
+What if: Performing the operation "Start-Transcript" on target "C:\nmg-identity-automation\Logs\BulkRun_2026-10-25_1232.log".
+
+  BULK OFFBOARDING
+  Accounts : 22
+  Ticket   : NMG-0231
+  DRY RUN. Nothing will change.
+
+What if: Performing the operation "Export-Csv" on target "C:\Reports\Offboarding\dalvarez_groups_2026-10-25_1232.csv".
+What if: Performing the operation "Set" on target "CN=Denise Alvarez,OU=Finance,DC=NMG,DC=com".
+What if: Performing the operation "Set" on target "CN=Denise Alvarez,OU=Finance,DC=NMG,DC=com".
+What if: Performing the operation "Set-ADAccountPassword" on target "CN=Denise Alvarez,OU=Finance,DC=NMG,DC=com".
+What if: Performing the operation "Set" on target "CN=Finance-Users,OU=Finance,DC=NMG,DC=com".
+What if: Performing the operation "Move" on target "CN=Denise Alvarez,OU=Finance,DC=NMG,DC=com".
+What if: Performing the operation "Export-Csv" on target "C:\Reports\Offboarding\BulkRun_2026-10-25_1232.csv".
+  would    dalvarez
+What if: Performing the operation "Export-Csv" on target "C:\Reports\Offboarding\pnakamura_groups_2026-10-25_1232.csv".
+What if: Performing the operation "Set" on target "CN=Peter Nakamura,OU=Finance,DC=NMG,DC=com".
+What if: Performing the operation "Set" on target "CN=Peter Nakamura,OU=Finance,DC=NMG,DC=com".
+What if: Performing the operation "Set-ADAccountPassword" on target "CN=Peter Nakamura,OU=Finance,DC=NMG,DC=com".
+What if: Performing the operation "Set" on target "CN=Finance-Users,OU=Finance,DC=NMG,DC=com".
+What if: Performing the operation "Move" on target "CN=Peter Nakamura,OU=Finance,DC=NMG,DC=com".
+What if: Performing the operation "Export-Csv" on target "C:\Reports\Offboarding\BulkRun_2026-10-25_1232.csv".
+  would    pnakamura
+What if: Performing the operation "Export-Csv" on target "C:\Reports\Offboarding\gokonkwo_groups_2026-10-25_1232.csv".
+What if: Performing the operation "Set" on target "CN=Grace Okonkwo,OU=HR,DC=NMG,DC=com".
+What if: Performing the operation "Set" on target "CN=Grace Okonkwo,OU=HR,DC=NMG,DC=com".
+What if: Performing the operation "Set-ADAccountPassword" on target "CN=Grace Okonkwo,OU=HR,DC=NMG,DC=com".
+What if: Performing the operation "Set" on target "CN=HR-Users,OU=HR,DC=NMG,DC=com".
+What if: Performing the operation "Move" on target "CN=Grace Okonkwo,OU=HR,DC=NMG,DC=com".
+What if: Performing the operation "Export-Csv" on target "C:\Reports\Offboarding\BulkRun_2026-10-25_1232.csv".
+  would    gokonkwo
+What if: Performing the operation "Export-Csv" on target "C:\Reports\Offboarding\awhitlock_groups_2026-10-25_1232.csv".
+What if: Performing the operation "Set" on target "CN=Aaron Whitlock,OU=Operations,DC=NMG,DC=com".
+What if: Performing the operation "Set" on target "CN=Aaron Whitlock,OU=Operations,DC=NMG,DC=com".
+What if: Performing the operation "Set-ADAccountPassword" on target "CN=Aaron Whitlock,OU=Operations,DC=NMG,DC=com".
+What if: Performing the operation "Set" on target "CN=Operations-Users,OU=Operations,DC=NMG,DC=com".
+What if: Performing the operation "Move" on target "CN=Aaron Whitlock,OU=Operations,DC=NMG,DC=com".
+What if: Performing the operation "Export-Csv" on target "C:\Reports\Offboarding\BulkRun_2026-10-25_1232.csv".
+  would    awhitlock
+What if: Performing the operation "Export-Csv" on target "C:\Reports\Offboarding\bferreiro_groups_2026-10-25_1232.csv".
+What if: Performing the operation "Set" on target "CN=Bianca Ferreiro,OU=Finance,DC=NMG,DC=com".
+What if: Performing the operation "Set" on target "CN=Bianca Ferreiro,OU=Finance,DC=NMG,DC=com".
+What if: Performing the operation "Set-ADAccountPassword" on target "CN=Bianca Ferreiro,OU=Finance,DC=NMG,DC=com".
+What if: Performing the operation "Set" on target "CN=Finance-Users,OU=Finance,DC=NMG,DC=com".
+What if: Performing the operation "Move" on target "CN=Bianca Ferreiro,OU=Finance,DC=NMG,DC=com".
+What if: Performing the operation "Export-Csv" on target "C:\Reports\Offboarding\BulkRun_2026-10-25_1232.csv".
+  would    bferreiro
+What if: Performing the operation "Export-Csv" on target "C:\Reports\Offboarding\tvance_groups_2026-10-25_1232.csv".
+What if: Performing the operation "Set" on target "CN=Theresa Vance,OU=HR,DC=NMG,DC=com".
+What if: Performing the operation "Set" on target "CN=Theresa Vance,OU=HR,DC=NMG,DC=com".
+What if: Performing the operation "Set-ADAccountPassword" on target "CN=Theresa Vance,OU=HR,DC=NMG,DC=com".
+What if: Performing the operation "Set" on target "CN=HR-Users,OU=HR,DC=NMG,DC=com".
+What if: Performing the operation "Move" on target "CN=Theresa Vance,OU=HR,DC=NMG,DC=com".
+What if: Performing the operation "Export-Csv" on target "C:\Reports\Offboarding\BulkRun_2026-10-25_1232.csv".
+  would    tvance
+What if: Performing the operation "Export-Csv" on target "C:\Reports\Offboarding\dmbeki_groups_2026-10-25_1232.csv".
+What if: Performing the operation "Set" on target "CN=Douglas Mbeki,OU=Operations,DC=NMG,DC=com".
+What if: Performing the operation "Set" on target "CN=Douglas Mbeki,OU=Operations,DC=NMG,DC=com".
+What if: Performing the operation "Set-ADAccountPassword" on target "CN=Douglas Mbeki,OU=Operations,DC=NMG,DC=com".
+What if: Performing the operation "Set" on target "CN=Operations-Users,OU=Operations,DC=NMG,DC=com".
+What if: Performing the operation "Move" on target "CN=Douglas Mbeki,OU=Operations,DC=NMG,DC=com".
+What if: Performing the operation "Export-Csv" on target "C:\Reports\Offboarding\BulkRun_2026-10-25_1232.csv".
+  would    dmbeki
+What if: Performing the operation "Export-Csv" on target "C:\Reports\Offboarding\apetrova_groups_2026-10-25_1232.csv".
+What if: Performing the operation "Set" on target "CN=Alina Petrova,OU=Finance,DC=NMG,DC=com".
+What if: Performing the operation "Set" on target "CN=Alina Petrova,OU=Finance,DC=NMG,DC=com".
+What if: Performing the operation "Set-ADAccountPassword" on target "CN=Alina Petrova,OU=Finance,DC=NMG,DC=com".
+What if: Performing the operation "Set" on target "CN=Finance-Users,OU=Finance,DC=NMG,DC=com".
+What if: Performing the operation "Move" on target "CN=Alina Petrova,OU=Finance,DC=NMG,DC=com".
+What if: Performing the operation "Export-Csv" on target "C:\Reports\Offboarding\BulkRun_2026-10-25_1232.csv".
+  would    apetrova
+What if: Performing the operation "Export-Csv" on target "C:\Reports\Offboarding\wcho_groups_2026-10-25_1232.csv".
+What if: Performing the operation "Set" on target "CN=Wendell Cho,OU=IT,DC=NMG,DC=com".
+What if: Performing the operation "Set" on target "CN=Wendell Cho,OU=IT,DC=NMG,DC=com".
+What if: Performing the operation "Set-ADAccountPassword" on target "CN=Wendell Cho,OU=IT,DC=NMG,DC=com".
+What if: Performing the operation "Set" on target "CN=IT-Users,OU=IT,DC=NMG,DC=com".
+What if: Performing the operation "Move" on target "CN=Wendell Cho,OU=IT,DC=NMG,DC=com".
+What if: Performing the operation "Export-Csv" on target "C:\Reports\Offboarding\BulkRun_2026-10-25_1232.csv".
+  would    wcho
+What if: Performing the operation "Export-Csv" on target "C:\Reports\Offboarding\rquaye_groups_2026-10-25_1232.csv".
+What if: Performing the operation "Set" on target "CN=Rosalind Quaye,OU=HR,DC=NMG,DC=com".
+What if: Performing the operation "Set" on target "CN=Rosalind Quaye,OU=HR,DC=NMG,DC=com".
+What if: Performing the operation "Set-ADAccountPassword" on target "CN=Rosalind Quaye,OU=HR,DC=NMG,DC=com".
+What if: Performing the operation "Set" on target "CN=HR-Users,OU=HR,DC=NMG,DC=com".
+What if: Performing the operation "Move" on target "CN=Rosalind Quaye,OU=HR,DC=NMG,DC=com".
+What if: Performing the operation "Export-Csv" on target "C:\Reports\Offboarding\BulkRun_2026-10-25_1232.csv".
+  would    rquaye
+What if: Performing the operation "Export-Csv" on target "C:\Reports\Offboarding\mdelacroix_groups_2026-10-25_1232.csv".
+What if: Performing the operation "Set" on target "CN=Marcus Delacroix,OU=Operations,DC=NMG,DC=com".
+What if: Performing the operation "Set" on target "CN=Marcus Delacroix,OU=Operations,DC=NMG,DC=com".
+What if: Performing the operation "Set-ADAccountPassword" on target "CN=Marcus Delacroix,OU=Operations,DC=NMG,DC=com".
+What if: Performing the operation "Set" on target "CN=Operations-Users,OU=Operations,DC=NMG,DC=com".
+What if: Performing the operation "Move" on target "CN=Marcus Delacroix,OU=Operations,DC=NMG,DC=com".
+What if: Performing the operation "Export-Csv" on target "C:\Reports\Offboarding\BulkRun_2026-10-25_1232.csv".
+  would    mdelacroix
+What if: Performing the operation "Export-Csv" on target "C:\Reports\Offboarding\isorokin_groups_2026-10-25_1232.csv".
+What if: Performing the operation "Set" on target "CN=Ivan Sorokin,OU=Finance,DC=NMG,DC=com".
+What if: Performing the operation "Set" on target "CN=Ivan Sorokin,OU=Finance,DC=NMG,DC=com".
+What if: Performing the operation "Set-ADAccountPassword" on target "CN=Ivan Sorokin,OU=Finance,DC=NMG,DC=com".
+What if: Performing the operation "Set" on target "CN=Finance-Users,OU=Finance,DC=NMG,DC=com".
+What if: Performing the operation "Move" on target "CN=Ivan Sorokin,OU=Finance,DC=NMG,DC=com".
+What if: Performing the operation "Export-Csv" on target "C:\Reports\Offboarding\BulkRun_2026-10-25_1232.csv".
+  would    isorokin
+What if: Performing the operation "Export-Csv" on target "C:\Reports\Offboarding\lansari_groups_2026-10-25_1232.csv".
+What if: Performing the operation "Set" on target "CN=Lucy Ansari,OU=Operations,DC=NMG,DC=com".
+What if: Performing the operation "Set" on target "CN=Lucy Ansari,OU=Operations,DC=NMG,DC=com".
+What if: Performing the operation "Set-ADAccountPassword" on target "CN=Lucy Ansari,OU=Operations,DC=NMG,DC=com".
+What if: Performing the operation "Set" on target "CN=Operations-Users,OU=Operations,DC=NMG,DC=com".
+What if: Performing the operation "Move" on target "CN=Lucy Ansari,OU=Operations,DC=NMG,DC=com".
+What if: Performing the operation "Export-Csv" on target "C:\Reports\Offboarding\BulkRun_2026-10-25_1232.csv".
+  would    lansari
+What if: Performing the operation "Export-Csv" on target "C:\Reports\Offboarding\bfeld_groups_2026-10-25_1232.csv".
+What if: Performing the operation "Set" on target "CN=Bruno Feld,OU=Finance,DC=NMG,DC=com".
+What if: Performing the operation "Set" on target "CN=Bruno Feld,OU=Finance,DC=NMG,DC=com".
+What if: Performing the operation "Set-ADAccountPassword" on target "CN=Bruno Feld,OU=Finance,DC=NMG,DC=com".
+What if: Performing the operation "Set" on target "CN=Finance-Users,OU=Finance,DC=NMG,DC=com".
+What if: Performing the operation "Move" on target "CN=Bruno Feld,OU=Finance,DC=NMG,DC=com".
+What if: Performing the operation "Export-Csv" on target "C:\Reports\Offboarding\BulkRun_2026-10-25_1232.csv".
+  would    bfeld
+What if: Performing the operation "Export-Csv" on target "C:\Reports\Offboarding\yadeyemi_groups_2026-10-25_1232.csv".
+What if: Performing the operation "Set" on target "CN=Yusuf Adeyemi,OU=IT,DC=NMG,DC=com".
+What if: Performing the operation "Set" on target "CN=Yusuf Adeyemi,OU=IT,DC=NMG,DC=com".
+What if: Performing the operation "Set-ADAccountPassword" on target "CN=Yusuf Adeyemi,OU=IT,DC=NMG,DC=com".
+What if: Performing the operation "Set" on target "CN=IT-Users,OU=IT,DC=NMG,DC=com".
+What if: Performing the operation "Move" on target "CN=Yusuf Adeyemi,OU=IT,DC=NMG,DC=com".
+What if: Performing the operation "Export-Csv" on target "C:\Reports\Offboarding\BulkRun_2026-10-25_1232.csv".
+  would    yadeyemi
+What if: Performing the operation "Export-Csv" on target "C:\Reports\Offboarding\test.user_groups_2026-10-25_1232.csv".
+What if: Performing the operation "Set" on target "CN=TEST DO NOT USE,OU=IT,DC=NMG,DC=com".
+What if: Performing the operation "Set" on target "CN=TEST DO NOT USE,OU=IT,DC=NMG,DC=com".
+What if: Performing the operation "Set-ADAccountPassword" on target "CN=TEST DO NOT USE,OU=IT,DC=NMG,DC=com".
+What if: Performing the operation "Set" on target "CN=IT-Users,OU=IT,DC=NMG,DC=com".
+What if: Performing the operation "Move" on target "CN=TEST DO NOT USE,OU=IT,DC=NMG,DC=com".
+What if: Performing the operation "Export-Csv" on target "C:\Reports\Offboarding\BulkRun_2026-10-25_1232.csv".
+  would    test.user
+What if: Performing the operation "Export-Csv" on target "C:\Reports\Offboarding\moyelaran_groups_2026-10-25_1232.csv".
+What if: Performing the operation "Set" on target "CN=Marguerite Oyelaran,OU=HR,DC=NMG,DC=com".
+What if: Performing the operation "Set" on target "CN=Marguerite Oyelaran,OU=HR,DC=NMG,DC=com".
+What if: Performing the operation "Set-ADAccountPassword" on target "CN=Marguerite Oyelaran,OU=HR,DC=NMG,DC=com".
+What if: Performing the operation "Set" on target "CN=HR-Users,OU=HR,DC=NMG,DC=com".
+What if: Performing the operation "Move" on target "CN=Marguerite Oyelaran,OU=HR,DC=NMG,DC=com".
+What if: Performing the operation "Export-Csv" on target "C:\Reports\Offboarding\BulkRun_2026-10-25_1232.csv".
+  would    moyelaran
+What if: Performing the operation "Export-Csv" on target "C:\Reports\Offboarding\cpetrie_groups_2026-10-25_1232.csv".
+What if: Performing the operation "Set" on target "CN=Callum Petrie,OU=Operations,DC=NMG,DC=com".
+What if: Performing the operation "Set" on target "CN=Callum Petrie,OU=Operations,DC=NMG,DC=com".
+What if: Performing the operation "Set-ADAccountPassword" on target "CN=Callum Petrie,OU=Operations,DC=NMG,DC=com".
+What if: Performing the operation "Set" on target "CN=Operations-Users,OU=Operations,DC=NMG,DC=com".
+What if: Performing the operation "Move" on target "CN=Callum Petrie,OU=Operations,DC=NMG,DC=com".
+What if: Performing the operation "Export-Csv" on target "C:\Reports\Offboarding\BulkRun_2026-10-25_1232.csv".
+  would    cpetrie
+What if: Performing the operation "Export-Csv" on target "C:\Reports\Offboarding\hyoshida_groups_2026-10-25_1232.csv".
+What if: Performing the operation "Set" on target "CN=Hana Yoshida,OU=Finance,DC=NMG,DC=com".
+What if: Performing the operation "Set" on target "CN=Hana Yoshida,OU=Finance,DC=NMG,DC=com".
+What if: Performing the operation "Set-ADAccountPassword" on target "CN=Hana Yoshida,OU=Finance,DC=NMG,DC=com".
+What if: Performing the operation "Set" on target "CN=Finance-Users,OU=Finance,DC=NMG,DC=com".
+What if: Performing the operation "Move" on target "CN=Hana Yoshida,OU=Finance,DC=NMG,DC=com".
+What if: Performing the operation "Export-Csv" on target "C:\Reports\Offboarding\BulkRun_2026-10-25_1232.csv".
+  would    hyoshida
+What if: Performing the operation "Export-Csv" on target "C:\Reports\Offboarding\ebergstrom_groups_2026-10-25_1232.csv".
+What if: Performing the operation "Set" on target "CN=Elias Bergstrom,OU=IT,DC=NMG,DC=com".
+What if: Performing the operation "Set" on target "CN=Elias Bergstrom,OU=IT,DC=NMG,DC=com".
+What if: Performing the operation "Set-ADAccountPassword" on target "CN=Elias Bergstrom,OU=IT,DC=NMG,DC=com".
+What if: Performing the operation "Set" on target "CN=IT-Users,OU=IT,DC=NMG,DC=com".
+What if: Performing the operation "Move" on target "CN=Elias Bergstrom,OU=IT,DC=NMG,DC=com".
+What if: Performing the operation "Export-Csv" on target "C:\Reports\Offboarding\BulkRun_2026-10-25_1232.csv".
+  would    ebergstrom
+What if: Performing the operation "Export-Csv" on target "C:\Reports\Offboarding\smarchetti_groups_2026-10-25_1232.csv".
+What if: Performing the operation "Set" on target "CN=Sylvia Marchetti,OU=HR,DC=NMG,DC=com".
+What if: Performing the operation "Set" on target "CN=Sylvia Marchetti,OU=HR,DC=NMG,DC=com".
+What if: Performing the operation "Set-ADAccountPassword" on target "CN=Sylvia Marchetti,OU=HR,DC=NMG,DC=com".
+What if: Performing the operation "Set" on target "CN=HR-Users,OU=HR,DC=NMG,DC=com".
+What if: Performing the operation "Move" on target "CN=Sylvia Marchetti,OU=HR,DC=NMG,DC=com".
+What if: Performing the operation "Export-Csv" on target "C:\Reports\Offboarding\BulkRun_2026-10-25_1232.csv".
+  would    smarchetti
+What if: Performing the operation "Export-Csv" on target "C:\Reports\Offboarding\nosei_groups_2026-10-25_1232.csv".
+What if: Performing the operation "Set" on target "CN=Nathaniel Osei,OU=Operations,DC=NMG,DC=com".
+What if: Performing the operation "Set" on target "CN=Nathaniel Osei,OU=Operations,DC=NMG,DC=com".
+What if: Performing the operation "Set-ADAccountPassword" on target "CN=Nathaniel Osei,OU=Operations,DC=NMG,DC=com".
+What if: Performing the operation "Set" on target "CN=Operations-Users,OU=Operations,DC=NMG,DC=com".
+What if: Performing the operation "Move" on target "CN=Nathaniel Osei,OU=Operations,DC=NMG,DC=com".
+What if: Performing the operation "Export-Csv" on target "C:\Reports\Offboarding\BulkRun_2026-10-25_1232.csv".
+  would    nosei
+
+  Dry run finished. Nothing changed, nothing recorded.
+  Remove -WhatIf to run it for real.
+
+**********************
+Windows PowerShell transcript end
+End time: 20261025123306
+**********************
