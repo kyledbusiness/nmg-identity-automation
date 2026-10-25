@@ -1,0 +1,798 @@
+﻿**********************
+Windows PowerShell transcript start
+Start time: 20261025105457
+Username: NMG\NMG-Admin
+RunAs User: NMG\NMG-Admin
+Configuration Name: 
+Machine: NMG-DC02 (Microsoft Windows NT 10.0.26100.0)
+Host Application: C:\Windows\syswow64\WindowsPowerShell\v1.0\PowerShell_ISE.exe
+Process ID: 8980
+PSVersion: 5.1.26100.33648
+PSEdition: Desktop
+PSCompatibleVersions: 1.0, 2.0, 3.0, 4.0, 5.0, 5.1.26100.33648
+BuildVersion: 10.0.26100.33648
+CLRVersion: 4.0.30319.42000
+WSManStackVersion: 3.0
+PSRemotingProtocolVersion: 2.3
+SerializationVersion: 1.1.0.1
+**********************
+  Rows read : 40
+
+  Rows in   : 40
+  Cleaned   : 35
+  Dropped   : 5
+    no username              2
+    not a username           1
+    duplicate of row 6       1
+    duplicate of row 4       1
+PS>TerminatingError(Get-ADUser): "Cannot find an object with identity: 'jhalloway' under: 'DC=NMG,DC=com'."
+
+
+Row      : 41
+Username : svc_backup
+Name     : Backup Service
+LastSeen : 10/22/2026 6:14:36 PM
+Verdict  : SERVICE ACCOUNT
+
+
+
+PS C:\Scripts> $checked | Sort-Object Row | Format-Table -AutoSize
+>> CommandInvocation(Out-Null): "Out-Null"
+PS C:\Scripts> $checked | Sort-Object Row | Format-Table -AutoSize
+>> CommandInvocation(Out-Null): "Out-Null"
+PS C:\Scripts> cd C:\Scripts
+. .\Invoke-BulkValidation.ps1 -InputFile "C:\Reports\Separations\NMG_Separations_Q2Q3.csv"
+  Rows read : 40
+
+  Rows in   : 40
+  Cleaned   : 35
+  Dropped   : 5
+    no username              2
+    not a username           1
+    duplicate of row 6       1
+    duplicate of row 4       1
+PS C:\Scripts> TerminatingError(Get-ADUser): "Cannot find an object with identity: 'jhalloway' under: 'DC=NMG,DC=com'."
+PS C:\Scripts> $checked | Sort-Object Row | Format-Table -AutoSize
+
+Row Username    Name                LastSeen              Verdict
+--- --------    ----                --------              -------
+  2 dkessler    Diane Kessler       7/4/2026 6:14:30 PM   ALREADY DISABLED
+  3 tnash       Trevor Nash         9/11/2026 6:14:30 PM  ALREADY DISABLED
+  4 hgrady      Harold Grady        10/28/2023 6:14:34 PM ALREADY DISABLED
+  5 rpace       Roland Pace         8/17/2025 6:14:35 PM  ALREADY DISABLED
+  6 kferreira   Kathy Ferreira      3/22/2026 6:14:34 PM  ALREADY DISABLED
+  7 oradcliffe  Owen Radcliffe      12/24/2025 6:14:34 PM ALREADY DISABLED
+  8 ehoffman    Erin Hoffman        9/6/2025 6:14:30 PM   ALREADY DISABLED
+  9 sfoster     Sean Foster         1/1/2026 6:14:30 PM   ALREADY DISABLED
+ 10 mjohnson    Marcus Johnson      2/15/2026 6:14:37 PM  ALREADY DISABLED
+ 11 dalvarez    Denise Alvarez      3/21/2026 9:33:59 AM  READY
+ 12 pnakamura   Peter Nakamura      12/28/2025 9:33:59 AM READY
+ 13 gokonkwo    Grace Okonkwo       5/3/2026 9:34:00 AM   READY
+ 15 awhitlock   Aaron Whitlock      6/1/2026 9:34:00 AM   READY
+ 16 bferreiro   Bianca Ferreiro     5/16/2026 9:34:00 AM  READY
+ 17 jhalloway                                             NOT IN DIRECTORY
+ 21 tvance      Theresa Vance       6/14/2026 9:34:00 AM  READY
+ 22 dmbeki      Douglas Mbeki       5/20/2026 9:34:01 AM  READY
+ 24 apetrova    Alina Petrova       6/20/2026 9:34:01 AM  READY
+ 25 wcho        Wendell Cho         4/4/2026 9:34:01 AM   READY
+ 26 rquaye      Rosalind Quaye      5/7/2026 9:34:01 AM   READY
+ 27 mdelacroix  Marcus Delacroix    5/29/2026 9:34:02 AM  READY
+ 28 isorokin    Ivan Sorokin        7/5/2026 9:34:02 AM   READY
+ 29 ppatel      Priya Patel         10/18/2026 6:14:29 PM STILL EMPLOYED
+ 30 svc_scanner Scanner Service     5/15/2024 6:14:37 PM  SERVICE ACCOUNT
+ 31 lansari     Lucy Ansari         7/9/2026 9:34:02 AM   READY
+ 32 bfeld       Bruno Feld          6/28/2026 9:34:02 AM  READY
+ 33 yadeyemi    Yusuf Adeyemi       3/8/2026 9:34:02 AM   READY
+ 34 test.user   Test Account        12/22/2022 6:14:36 PM READY
+ 35 moyelaran   Marguerite Oyelaran 6/6/2026 9:34:03 AM   READY
+ 36 cpetrie     Callum Petrie       5/11/2026 9:34:03 AM  READY
+ 37 hyoshida    Hana Yoshida        6/23/2026 9:34:03 AM  READY
+ 38 ebergstrom  Elias Bergstrom     4/20/2026 9:34:03 AM  READY
+ 39 smarchetti  Sylvia Marchetti    5/25/2026 9:34:03 AM  READY
+ 40 nosei       Nathaniel Osei      6/11/2026 9:34:04 AM  READY
+ 41 svc_backup  Backup Service      10/22/2026 6:14:36 PM SERVICE ACCOUNT
+
+
+PS C:\Scripts> $checked | Group-Object Verdict |
+  Select-Object Name, Count |
+  Sort-Object Count -Descending
+
+
+Name             Count
+----             -----
+READY               22
+ALREADY DISABLED     9
+SERVICE ACCOUNT      2
+NOT IN DIRECTORY     1
+STILL EMPLOYED       1
+
+
+PS C:\Scripts> notepad C:\Reports\Separations\Validation-Report.txt
+PS C:\Scripts> cd C:\nmg-identity-automation
+git pull
+git status
+
+Already up to date.
+On branch main
+Your branch is up to date with 'origin/main'.
+
+Untracked files:
+  (use "git add <file>..." to include in what will be committed)
+	Logs/Invoke-BulkValidation_2026-10-25_1054.log
+	Logs/Invoke-BulkValidation_2026-10-25_1058.log
+
+nothing added to commit but untracked files present (use "git add" to track)
+PS C:\nmg-identity-automation> Copy-Item "C:\Scripts\Invoke-BulkValidation.ps1" -Destination ".\Scripts\"
+
+Copy-Item "C:\Reports\Separations\Separations_dropped.csv"  -Destination ".\Evidence\"
+Copy-Item "C:\Reports\Separations\Validation-Report.txt"    -Destination ".\Evidence\"
+Copy-Item "C:\Reports\Separations\Approved.csv"             -Destination ".\Evidence\"
+
+PS C:\nmg-identity-automation> Get-ChildItem ".\Scripts", ".\Evidence", ".\Logs" |
+  Select-Object Directory, Name, LastWriteTime
+
+
+Directory                           Name                                          LastWriteTime
+---------                           ----                                          -------------
+C:\nmg-identity-automation\Scripts  Find-StaleAccounts.ps1                        10/23/2026 10:35:15 PM
+C:\nmg-identity-automation\Scripts  Get-NMGOffboardingStatus.ps1                  10/24/2026 9:07:14 PM
+C:\nmg-identity-automation\Scripts  Invoke-BulkValidation.ps1                     10/25/2026 10:58:03 AM
+C:\nmg-identity-automation\Scripts  Offboard-NMGUser.ps1                          10/25/2026 9:35:28 AM
+C:\nmg-identity-automation\Evidence Approved.csv                                  10/25/2026 10:58:08 AM
+C:\nmg-identity-automation\Evidence hgrady_account_2026-10-24_1617.csv            10/24/2026 4:17:46 PM
+C:\nmg-identity-automation\Evidence hgrady_groups_2026-10-24_1617.csv             10/24/2026 4:17:46 PM
+C:\nmg-identity-automation\Evidence kferreira_account_2026-10-24_1135.csv         10/24/2026 11:35:17 AM
+C:\nmg-identity-automation\Evidence kferreira_final_state.txt                     10/24/2026 12:13:24 PM
+C:\nmg-identity-automation\Evidence kferreira_groups_2026-10-24_1135.csv          10/24/2026 11:35:17 AM
+C:\nmg-identity-automation\Evidence NMG_Separations_Q2Q3.csv                      10/25/2026 9:34:04 AM
+C:\nmg-identity-automation\Evidence NMG_StaleAccounts_2026-10-23_2238.csv         10/23/2026 10:38:45 PM
+C:\nmg-identity-automation\Evidence NMG_StaleAccounts_2026-10-23_2238_SUMMARY.txt 10/23/2026 10:38:45 PM
+C:\nmg-identity-automation\Evidence oradcliffe_account_2026-10-24_2101.csv        10/24/2026 9:01:23 PM
+C:\nmg-identity-automation\Evidence oradcliffe_groups_2026-10-24_2101.csv         10/24/2026 9:01:23 PM
+C:\nmg-identity-automation\Evidence rpace_account_2026-10-24_1832.csv             10/24/2026 6:32:56 PM
+C:\nmg-identity-automation\Evidence rpace_groups_2026-10-24_1832.csv              10/24/2026 6:32:56 PM
+C:\nmg-identity-automation\Evidence Separations_cleaned.csv                       10/25/2026 9:49:31 AM
+C:\nmg-identity-automation\Evidence Separations_dropped.csv                       10/25/2026 10:58:08 AM
+C:\nmg-identity-automation\Evidence Validation-Report.txt                         10/25/2026 10:58:08 AM
+C:\nmg-identity-automation\Logs     Disable-NMGUser_2026-10-24_1613.log           10/24/2026 4:13:16 PM
+C:\nmg-identity-automation\Logs     Disable-NMGUser_2026-10-24_1614.log           10/24/2026 4:14:59 PM
+C:\nmg-identity-automation\Logs     Disable-NMGUser_2026-10-24_1615.log           10/24/2026 4:15:14 PM
+C:\nmg-identity-automation\Logs     Disable-NMGUser_2026-10-24_1617.log           10/24/2026 4:17:47 PM
+C:\nmg-identity-automation\Logs     Disable-NMGUser_2026-10-24_1823.log           10/24/2026 6:23:35 PM
+C:\nmg-identity-automation\Logs     Disable-NMGUser_2026-10-24_1824.log           10/24/2026 6:24:58 PM
+C:\nmg-identity-automation\Logs     Disable-NMGUser_2026-10-24_1832.log           10/24/2026 6:32:56 PM
+C:\nmg-identity-automation\Logs     Disable-NMGUser_2026-10-24_2101.log           10/24/2026 9:01:24 PM
+C:\nmg-identity-automation\Logs     Disable-NMGUser_2026-10-24_2202.log           10/24/2026 10:02:06 PM
+C:\nmg-identity-automation\Logs     Invoke-BulkValidation_2026-10-25_1054.log     10/25/2026 10:54:57 AM
+C:\nmg-identity-automation\Logs     Invoke-BulkValidation_2026-10-25_1058.log     10/25/2026 10:58:08 AM
+
+
+PS C:\nmg-identity-automation> .\Scripts\Get-NMGOffboardingStatus.ps1
+
+  NORTHSTAR OFFBOARDING STATUS
+  Sunday 25 October 2026, 11:07
+
+  Offboarded and quarantined ....... 5
+  Offboarded, not yet moved ........ 25
+  Still waiting .................... 30
+
+  NOT YET MOVED
+    Guest        Guest
+    krbtgt       krbtgt
+    mjohnson     Marcus Johnson
+    tnash        Trevor Nash
+    dkessler     Diane Kessler
+    sfoster      Sam Foster
+    ehoffman     Eric Hoffman
+    bknowles     Bernadette Knowles
+    rvasquez     Rosa Vasquez
+    pnorris      Peter Norris
+    jpark        Jae Park
+    awhitfield   Angela Whitfield
+    dmurray      Dennis Murray
+    kobrien      Katie OBrien
+    lchen        Linda Chen
+    gmorales     Gabriel Morales
+    hthompson    Hannah Thompson
+    tbaker       Tonya Baker
+    cwarren      Curtis Warren
+    jrivera      Joel Rivera
+    nsullivan    Nina Sullivan
+    avaldez      Ana Valdez
+    bschaefer    Bill Schaefer
+    mfitzgerald  Molly Fitzgerald
+    rkline       Ruth Kline
+
+  STILL WAITING
+    test.user    TEST DO NOT USE      IT
+    svc_legacyfax svc_legacyfax        Service Accounts
+    svc_scanner  svc_scanner          Service Accounts
+    mwebb2       Marcus Webb 2        Operations
+    temp.imaging TEMP Imaging         Operations
+    pnakamura    Peter Nakamura       Finance
+    vsterling    Vaughn Sterling      Operations
+    yadeyemi     Yusuf Adeyemi        IT
+    dalvarez     Denise Alvarez       Finance
+    wcho         Wendell Cho          IT
+    cashford     Camille Ashford      Operations
+    ebergstrom   Elias Bergstrom      IT
+    iokoro       Imani Okoro          Operations
+    gokonkwo     Grace Okonkwo        HR
+    rquaye       Rosalind Quaye       HR
+    jvoss        Jennifer Voss        Finance
+    cpetrie      Callum Petrie        Operations
+    bferreiro    Bianca Ferreiro      Finance
+    dmbeki       Douglas Mbeki        Operations
+    smarchetti   Sylvia Marchetti     HR
+    mdelacroix   Marcus Delacroix     Operations
+    awhitlock    Aaron Whitlock       Operations
+    moyelaran    Marguerite Oyelaran  HR
+    nosei        Nathaniel Osei       Operations
+    tvance       Theresa Vance        HR
+    apetrova     Alina Petrova        Finance
+    hyoshida     Hana Yoshida         Finance
+    bfeld        Bruno Feld           Finance
+    isorokin     Ivan Sorokin         Finance
+    lansari      Lucy Ansari          Operations
+
+PS C:\nmg-identity-automation> notepad Documentation\Offboarding-Runbook.md
+PS C:\nmg-identity-automation> git add .
+PS C:\nmg-identity-automation> git status
+On branch main
+Your branch is up to date with 'origin/main'.
+
+Changes to be committed:
+  (use "git restore --staged <file>..." to unstage)
+	modified:   Documentation/Offboarding-Runbook.md
+	new file:   Evidence/Approved.csv
+	new file:   Evidence/Separations_dropped.csv
+	new file:   Evidence/Validation-Report.txt
+	new file:   Logs/Invoke-BulkValidation_2026-10-25_1054.log
+	new file:   Logs/Invoke-BulkValidation_2026-10-25_1058.log
+	new file:   Scripts/Invoke-BulkValidation.ps1
+
+Changes not staged for commit:
+  (use "git add <file>..." to update what will be committed)
+  (use "git restore <file>..." to discard changes in working directory)
+	modified:   Logs/Invoke-BulkValidation_2026-10-25_1054.log
+
+PS C:\nmg-identity-automation> git commit -m "Add Invoke-BulkValidation. Validation only, no accounts modified."
+[main d682202] Add Invoke-BulkValidation. Validation only, no accounts modified.
+ 7 files changed, 421 insertions(+)
+ create mode 100644 Evidence/Approved.csv
+ create mode 100644 Evidence/Separations_dropped.csv
+ create mode 100644 Evidence/Validation-Report.txt
+ create mode 100644 Logs/Invoke-BulkValidation_2026-10-25_1054.log
+ create mode 100644 Logs/Invoke-BulkValidation_2026-10-25_1058.log
+ create mode 100644 Scripts/Invoke-BulkValidation.ps1
+PS C:\nmg-identity-automation> git push
+git : To https://github.com/kyledbusiness/nmg-identity-automation.git
+At line:1 char:1
++ git push
++ ~~~~~~~~
+    + CategoryInfo          : NotSpecified: (To https://gith...-automation.git:String) [], RemoteException
+    + FullyQualifiedErrorId : NativeCommandError
+git : To https://github.com/kyledbusiness/nmg-identity-automation.git
+At line:1 char:1
++ git push
++ ~~~~~~~~
+    + CategoryInfo          : NotSpecified: (To https://gith...-automation.git:String) [], RemoteException
+    + FullyQualifiedErrorId : NativeCommandError
+
+   75d7e41..d682202  main -> main
+   75d7e41..d682202  main -> main
+PS C:\nmg-identity-automation> cd C:\nmg-identity-automation
+
+Import-Csv ".\Evidence\Approved.csv" |
+  Group-Object Verdict | Select-Object Name, Count
+
+
+Name  Count
+----  -----
+READY    22
+
+
+PS C:\nmg-identity-automation> cd C:\nmg-identity-automation
+
+Import-Csv ".\Evidence\Approved.csv" |
+  Group-Object Verdict | Select-Object Name, Count
+
+
+Name  Count
+----  -----
+READY    22
+
+
+PS C:\nmg-identity-automation> @"
+From: Rachel Ito, Privacy Officer
+Date: 13 Aug 2026, 16:40
+Re: Bulk offboarding review
+
+Row 29: NO. Priya is at her desk. Remove from the list.
+Service accounts: hold, I will find the owners.
+Already disabled: skip, do not overwrite.
+
+Everything else: approved. 22 accounts.
+
+R.
+"@ | Out-File ".\Evidence\Rachel-approval-13Aug.txt" -Encoding UTF8
+
+Get-Content ".\Evidence\Rachel-approval-13Aug.txt"
+
+From: Rachel Ito, Privacy Officer
+Date: 13 Aug 2026, 16:40
+Re: Bulk offboarding review
+
+Row 29: NO. Priya is at her desk. Remove from the list.
+Service accounts: hold, I will find the owners.
+Already disabled: skip, do not overwrite.
+
+Everything else: approved. 22 accounts.
+
+R.
+PS C:\nmg-identity-automation> #=============================================================
+#  THROWAWAY ACCOUNTS FOR DAY 14
+#  TotalThreat 30-Day Challenge
+#
+#  Creates 11 test accounts in a Test Accounts OU, and the
+#  list that points at them. Run it again at any point to
+#  put them all back to fresh, whatever state they are in.
+#
+#  These exist so you can break your script on purpose without
+#  going anywhere near Sandra's approved list.
+#=============================================================
+
+Import-Module ActiveDirectory
+
+$Domain = Get-ADDomain
+if ($Domain.DNSRoot -ne "NMG.com") {
+    Write-Host ""
+    Write-Host "  STOP. This is not the NMG.com lab domain." -ForegroundColor Red
+    Write-Host ""
+    return
+}
+
+$Root   = $Domain.DistinguishedName
+$OuName = "Test Accounts"
+$OuPath = "OU=$OuName,$Root"
+$Pw     = ConvertTo-SecureString "Northstar2025!" -AsPlainText -Force
+
+Write-Host ""
+Write-Host "  THROWAWAY ACCOUNTS FOR DAY 14" -ForegroundColor Cyan
+Write-Host "  -----------------------------"
+Write-Host ""
+
+#--- Remove any that already exist, wherever they are --------
+# A previous run may have moved them to Disabled Users or left
+# them half-offboarded. Fresh means fresh.
+
+$old = Get-ADUser -Filter "SamAccountName -like 'testuser*'" -ErrorAction SilentlyContinue
+if ($old) {
+    $old | Remove-ADUser -Confirm:$false
+    Write-Host "        reset   : removed $($old.Count) existing test accounts" -ForegroundColor DarkGray
+}
+
+Get-ChildItem "C:\Reports\Offboarding\testuser*" -ErrorAction SilentlyContinue | Remove-Item -Force
+Get-ChildItem "C:\Reports\Offboarding\BulkRun_*"  -ErrorAction SilentlyContinue | Remove-Item -Force
+
+#--- The OU they live in -------------------------------------
+
+if (-not (Get-ADOrganizationalUnit -Filter "Name -eq '$OuName'" -ErrorAction SilentlyContinue)) {
+    New-ADOrganizationalUnit -Name $OuName -Path $Root -ProtectedFromAccidentalDeletion $false
+    Write-Host "        created : OU $OuName" -ForegroundColor Green
+}
+
+#--- Two groups, so the rollback has something to restore ----
+
+foreach ($g in @("Test-Users", "Test-Shared")) {
+    if (-not (Get-ADGroup -Filter "Name -eq '$g'" -ErrorAction SilentlyContinue)) {
+        New-ADGroup -Name $g -GroupScope Global -GroupCategory Security `
+            -Path $OuPath -Description "Day 14 throwaway group"
+        Write-Host "        created : group $g" -ForegroundColor Green
+    }
+}
+
+#--- The 11 accounts -----------------------------------------
+
+foreach ($i in 1..11) {
+    $sam  = "testuser{0:D2}" -f $i
+    $name = "Test User {0:D2}" -f $i
+
+    New-ADUser -Name $name -DisplayName $name -SamAccountName $sam `
+        -UserPrincipalName "$sam@NMG.com" -Path $OuPath `
+        -Department "Test Accounts" -Title "Throwaway" `
+        -AccountPassword $Pw -Enabled $true -ChangePasswordAtLogon $false
+
+    Add-ADGroupMember -Identity "Test-Users"  -Members $sam
+    Add-ADGroupMember -Identity "Test-Shared" -Members $sam
+}
+Write-Host "        created : testuser01 to testuser11, each in 2 groups" -ForegroundColor Green
+
+#--- The list that points at them ----------------------------
+
+$Folder = "C:\Reports\Separations"
+if (-not (Test-Path $Folder)) { New-Item -Path $Folder -ItemType Directory -Force | Out-Null }
+$File = "$Folder\test-accounts.csv"
+
+1..11 | ForEach-Object {
+    [PSCustomObject]@{
+        Row      = $_ + 1
+        Username = "testuser{0:D2}" -f $_
+        Name     = "Test User {0:D2}" -f $_
+        LastSeen = (Get-Date).AddDays(-200)
+        Verdict  = "READY"
+    }
+} | Export-Csv $File -NoTypeInformation
+
+Write-Host "        list    : $File"
+Write-Host ""
+Write-Host "  Fresh. Break anything you like." -ForegroundColor Yellow
+Write-Host ""
+
+
+
+  THROWAWAY ACCOUNTS FOR DAY 14
+  -----------------------------
+
+        created : OU Test Accounts
+        created : group Test-Users
+        created : group Test-Shared
+        created : testuser01 to testuser11, each in 2 groups
+        list    : C:\Reports\Separations\test-accounts.csv
+
+  Fresh. Break anything you like.
+
+PS C:\nmg-identity-automation> Import-Csv "C:\Reports\Separations\test-accounts.csv" | Select-Object -First 3
+
+
+Row      : 2
+Username : testuser01
+Name     : Test User 01
+LastSeen : 4/8/2026 11:45:23 AM
+Verdict  : READY
+
+Row      : 3
+Username : testuser02
+Name     : Test User 02
+LastSeen : 4/8/2026 11:45:23 AM
+Verdict  : READY
+
+Row      : 4
+Username : testuser03
+Name     : Test User 03
+LastSeen : 4/8/2026 11:45:23 AM
+Verdict  : READY
+
+
+
+PS C:\nmg-identity-automation> cd C:\Scripts
+
+.\Invoke-BulkOffboarding.ps1 `
+    -ApprovedList "C:\Reports\Separations\test-accounts.csv" `
+    -BreakOn "testuser11"
+
+
+  BULK OFFBOARDING
+  Accounts : 11
+  Ticket   : NMG-0215
+
+C:\Reports\Offboarding\testuser01_groups_2026-10-25_1151.csv
+  ok  testuser01
+C:\Reports\Offboarding\testuser02_groups_2026-10-25_1151.csv
+  ok  testuser02
+C:\Reports\Offboarding\testuser03_groups_2026-10-25_1151.csv
+  ok  testuser03
+C:\Reports\Offboarding\testuser04_groups_2026-10-25_1151.csv
+  ok  testuser04
+C:\Reports\Offboarding\testuser05_groups_2026-10-25_1151.csv
+  ok  testuser05
+C:\Reports\Offboarding\testuser06_groups_2026-10-25_1151.csv
+  ok  testuser06
+C:\Reports\Offboarding\testuser07_groups_2026-10-25_1151.csv
+  ok  testuser07
+C:\Reports\Offboarding\testuser08_groups_2026-10-25_1151.csv
+  ok  testuser08
+C:\Reports\Offboarding\testuser09_groups_2026-10-25_1151.csv
+  ok  testuser09
+C:\Reports\Offboarding\testuser10_groups_2026-10-25_1151.csv
+  ok  testuser10
+C:\Reports\Offboarding\testuser11_groups_2026-10-25_1151.csv
+PS C:\nmg-identity-automation> TerminatingError(): "Cannot find an object with identity: 'EHR-Clinical-RENAMED'"
+>> TerminatingError(): "Cannot find an object with identity: 'EHR-Clinical-RENAMED'"
+>> TerminatingError(): "Cannot find an object with identity: 'EHR-Clinical-RENAMED'"
+Cannot find an object with identity: 'EHR-Clinical-RENAMED'
+At C:\Scripts\Invoke-BulkOffboarding.ps1:60 char:9
++         throw "Cannot find an object with identity: 'EHR-Clinical-REN ...
++         ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : OperationStopped: (Cannot find an ...inical-RENAMED':String) [], RuntimeException
+    + FullyQualifiedErrorId : Cannot find an object with identity: 'EHR-Clinical-RENAMED'
+
+PS C:\Scripts> Get-ADUser -Identity "testuser11" -Properties MemberOf, Description |
+  Select-Object Name, Enabled, Description,
+                @{n="Groups";e={$_.MemberOf.Count}},
+                DistinguishedName | Format-List
+
+
+
+Name              : Test User 11
+Enabled           : False
+Description       : Offboarded 2026-10-25 | Ticket NMG-0215
+Groups            : 2
+DistinguishedName : CN=Test User 11,OU=Test Accounts,DC=NMG,DC=com
+
+
+
+PS C:\Scripts> .\Invoke-BulkOffboarding.ps1 `
+    -ApprovedList "C:\Reports\Separations\test-accounts.csv" `
+    -BreakOn "testuser11"
+
+
+  BULK OFFBOARDING
+  Accounts : 11
+  Ticket   : NMG-0215
+
+  ok       testuser01
+  ok       testuser02
+  ok       testuser03
+  ok       testuser04
+  ok       testuser05
+  ok       testuser06
+  ok       testuser07
+  ok       testuser08
+  ok       testuser09
+  ok       testuser10
+PS C:\Scripts> TerminatingError(): "Cannot find an object with identity: 'EHR-Clinical-RENAMED'"
+PS C:\Scripts> TerminatingError(Set-ADUser): "replace"
+>> TerminatingError(Set-ADUser): "replace"
+  STRANDED testuser11  MANUAL REVIEW NEEDED
+PS C:\Scripts> Get-ADUser -Identity "testuser11" -Properties MemberOf, Description |
+  Select-Object Name, Enabled, Description,
+                @{n="Groups";e={$_.MemberOf.Count}},
+                DistinguishedName | Format-List
+
+
+
+Name              : Test User 11
+Enabled           : True
+Description       : Offboarded 2026-10-25 | Ticket NMG-0215
+Groups            : 2
+DistinguishedName : CN=Test User 11,OU=Test Accounts,DC=NMG,DC=com
+
+
+
+PS C:\Scripts> Import-Csv "C:\Reports\Offboarding\BulkRun_*.csv" | Format-Table -AutoSize
+
+Time     Row Username   Outcome  Step Detail
+----     --- --------   -------  ---- ------
+11:57:24 2   testuser01 COMPLETE 5
+11:57:25 3   testuser02 COMPLETE 5
+11:57:25 4   testuser03 COMPLETE 5
+11:57:26 5   testuser04 COMPLETE 5
+11:57:26 6   testuser05 COMPLETE 5
+11:57:27 7   testuser06 COMPLETE 5
+11:57:27 8   testuser07 COMPLETE 5
+11:57:28 9   testuser08 COMPLETE 5
+11:57:28 10  testuser09 COMPLETE 5
+11:57:29 11  testuser10 COMPLETE 5
+11:57:29 12  testuser11 STRANDED 4    rollback FAILED: replace
+
+
+PS C:\Scripts> .\Invoke-BulkOffboarding.ps1 `
+    -ApprovedList "C:\Reports\Separations\test-accounts.csv" `
+    -BreakOn "testuser*"
+
+
+  BULK OFFBOARDING
+  Accounts : 11
+  Ticket   : NMG-0215
+
+PS C:\Scripts> TerminatingError(): "Cannot find an object with identity: 'EHR-Clinical-RENAMED'"
+PS C:\Scripts> TerminatingError(Set-ADUser): "replace"
+>> TerminatingError(Set-ADUser): "replace"
+  STRANDED testuser01  MANUAL REVIEW NEEDED
+PS C:\Scripts> TerminatingError(): "Cannot find an object with identity: 'EHR-Clinical-RENAMED'"
+PS C:\Scripts> TerminatingError(Set-ADUser): "replace"
+>> TerminatingError(Set-ADUser): "replace"
+  STRANDED testuser02  MANUAL REVIEW NEEDED
+PS C:\Scripts> TerminatingError(): "Cannot find an object with identity: 'EHR-Clinical-RENAMED'"
+PS C:\Scripts> TerminatingError(Set-ADUser): "replace"
+>> TerminatingError(Set-ADUser): "replace"
+  STRANDED testuser03  MANUAL REVIEW NEEDED
+
+  STOPPING: 3 consecutive failures.
+  This looks systemic rather than per-account.
+  8 accounts not attempted.
+
+  Bulk offboarding finished.  Approved: 11
+
+    Completed ......... 0
+    Rolled back ....... 0
+    Stranded .......... 3
+
+    testuser01   row 2    STRANDED at step 4
+                      rollback FAILED: replace
+    testuser02   row 3    STRANDED at step 4
+                      rollback FAILED: replace
+    testuser03   row 4    STRANDED at step 4
+                      rollback FAILED: replace
+
+PS C:\Scripts> Import-Module ActiveDirectory
+$root = (Get-ADDomain).DistinguishedName
+
+Get-ADUser -Filter "SamAccountName -like 'testuser*'" | Remove-ADUser -Confirm:$false
+Get-ADGroup -Filter "Name -like 'Test-*'"            | Remove-ADGroup -Confirm:$false
+
+$ou = Get-ADOrganizationalUnit -Filter "Name -eq 'Test Accounts'"
+if ($ou) {
+    Set-ADOrganizationalUnit $ou -ProtectedFromAccidentalDeletion $false
+    Remove-ADOrganizationalUnit $ou -Confirm:$false
+}
+
+Remove-Item "C:\Reports\Offboarding\testuser*" -Force
+Remove-Item "C:\Reports\Offboarding\BulkRun_*"  -Force
+Remove-Item "C:\Reports\Separations\test-accounts.csv" -Force
+
+PS C:\Scripts> Import-Module ActiveDirectory
+$root = (Get-ADDomain).DistinguishedName
+
+Get-ADUser -Filter "SamAccountName -like 'testuser*'" | Remove-ADUser -Confirm:$false
+Get-ADGroup -Filter "Name -like 'Test-*'"            | Remove-ADGroup -Confirm:$false
+
+$ou = Get-ADOrganizationalUnit -Filter "Name -eq 'Test Accounts'"
+if ($ou) {
+    Set-ADOrganizationalUnit $ou -ProtectedFromAccidentalDeletion $false
+    Remove-ADOrganizationalUnit $ou -Confirm:$false
+}
+
+Remove-Item "C:\Reports\Offboarding\testuser*" -Force
+Remove-Item "C:\Reports\Offboarding\BulkRun_*"  -Force
+Remove-Item "C:\Reports\Separations\test-accounts.csv" -Force
+
+Remove-Item : Cannot find path 'C:\Reports\Separations\test-accounts.csv' because it does not exist.
+At line:15 char:1
++ Remove-Item "C:\Reports\Separations\test-accounts.csv" -Force
++ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : ObjectNotFound: (C:\Reports\Separations\test-accounts.csv:String) [Remove-Item], 
+ItemNotFoundException
+    + FullyQualifiedErrorId : PathNotFound,Microsoft.PowerShell.Commands.RemoveItemCommand
+Remove-Item : Cannot find path 'C:\Reports\Separations\test-accounts.csv' because it does not exist.
+At line:15 char:1
++ Remove-Item "C:\Reports\Separations\test-accounts.csv" -Force
++ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : ObjectNotFound: (C:\Reports\Separations\test-accounts.csv:String) [Remove-Item], ItemNotFoundException
+    + FullyQualifiedErrorId : PathNotFound,Microsoft.PowerShell.Commands.RemoveItemCommand
+
+PS C:\Scripts> cd C:\nmg-identity-automation
+.\Scripts\Get-NMGOffboardingStatus.ps1
+
+
+  NORTHSTAR OFFBOARDING STATUS
+  Sunday 25 October 2026, 12:14
+
+  Offboarded and quarantined ....... 5
+  Offboarded, not yet moved ........ 25
+  Still waiting .................... 30
+
+  NOT YET MOVED
+    Guest        Guest
+    krbtgt       krbtgt
+    mjohnson     Marcus Johnson
+    tnash        Trevor Nash
+    dkessler     Diane Kessler
+    sfoster      Sam Foster
+    ehoffman     Eric Hoffman
+    bknowles     Bernadette Knowles
+    rvasquez     Rosa Vasquez
+    pnorris      Peter Norris
+    jpark        Jae Park
+    awhitfield   Angela Whitfield
+    dmurray      Dennis Murray
+    kobrien      Katie OBrien
+    lchen        Linda Chen
+    gmorales     Gabriel Morales
+    hthompson    Hannah Thompson
+    tbaker       Tonya Baker
+    cwarren      Curtis Warren
+    jrivera      Joel Rivera
+    nsullivan    Nina Sullivan
+    avaldez      Ana Valdez
+    bschaefer    Bill Schaefer
+    mfitzgerald  Molly Fitzgerald
+    rkline       Ruth Kline
+
+  STILL WAITING
+    test.user    TEST DO NOT USE      IT
+    svc_legacyfax svc_legacyfax        Service Accounts
+    svc_scanner  svc_scanner          Service Accounts
+    mwebb2       Marcus Webb 2        Operations
+    temp.imaging TEMP Imaging         Operations
+    pnakamura    Peter Nakamura       Finance
+    vsterling    Vaughn Sterling      Operations
+    yadeyemi     Yusuf Adeyemi        IT
+    dalvarez     Denise Alvarez       Finance
+    wcho         Wendell Cho          IT
+    cashford     Camille Ashford      Operations
+    ebergstrom   Elias Bergstrom      IT
+    iokoro       Imani Okoro          Operations
+    gokonkwo     Grace Okonkwo        HR
+    rquaye       Rosalind Quaye       HR
+    jvoss        Jennifer Voss        Finance
+    cpetrie      Callum Petrie        Operations
+    bferreiro    Bianca Ferreiro      Finance
+    dmbeki       Douglas Mbeki        Operations
+    smarchetti   Sylvia Marchetti     HR
+    mdelacroix   Marcus Delacroix     Operations
+    awhitlock    Aaron Whitlock       Operations
+    moyelaran    Marguerite Oyelaran  HR
+    nosei        Nathaniel Osei       Operations
+    tvance       Theresa Vance        HR
+    apetrova     Alina Petrova        Finance
+    hyoshida     Hana Yoshida         Finance
+    bfeld        Bruno Feld           Finance
+    isorokin     Ivan Sorokin         Finance
+    lansari      Lucy Ansari          Operations
+
+PS C:\nmg-identity-automation> git pull
+git status
+
+Copy-Item "C:\Scripts\Invoke-BulkOffboarding.ps1" -Destination ".\Scripts\"
+
+Get-ChildItem ".\Scripts" | Select-Object Name, LastWriteTime
+
+Already up to date.
+On branch main
+Your branch is up to date with 'origin/main'.
+
+Changes not staged for commit:
+  (use "git add <file>..." to update what will be committed)
+  (use "git restore <file>..." to discard changes in working directory)
+	modified:   Logs/Invoke-BulkValidation_2026-10-25_1054.log
+
+Untracked files:
+  (use "git add <file>..." to include in what will be committed)
+	Evidence/Rachel-approval-13Aug.txt
+
+no changes added to commit (use "git add" and/or "git commit -a")
+
+Name                         LastWriteTime
+----                         -------------
+Find-StaleAccounts.ps1       10/23/2026 10:35:15 PM
+Get-NMGOffboardingStatus.ps1 10/24/2026 9:07:14 PM
+Invoke-BulkOffboarding.ps1   10/25/2026 12:03:36 PM
+Invoke-BulkValidation.ps1    10/25/2026 10:58:03 AM
+Offboard-NMGUser.ps1         10/25/2026 9:35:28 AM
+
+
+PS C:\nmg-identity-automation> git pull
+git status
+
+Copy-Item "C:\Scripts\Invoke-BulkOffboarding.ps1" -Destination ".\Scripts\"
+
+Get-ChildItem ".\Scripts" | Select-Object Name, LastWriteTime
+
+Already up to date.
+On branch main
+Your branch is up to date with 'origin/main'.
+
+Changes not staged for commit:
+  (use "git add <file>..." to update what will be committed)
+  (use "git restore <file>..." to discard changes in working directory)
+	modified:   Logs/Invoke-BulkValidation_2026-10-25_1054.log
+
+Untracked files:
+  (use "git add <file>..." to include in what will be committed)
+	Evidence/Rachel-approval-13Aug.txt
+	Scripts/Invoke-BulkOffboarding.ps1
+
+no changes added to commit (use "git add" and/or "git commit -a")
+
+Name                         LastWriteTime
+----                         -------------
+Find-StaleAccounts.ps1       10/23/2026 10:35:15 PM
+Get-NMGOffboardingStatus.ps1 10/24/2026 9:07:14 PM
+Invoke-BulkOffboarding.ps1   10/25/2026 12:03:36 PM
+Invoke-BulkValidation.ps1    10/25/2026 10:58:03 AM
+Offboard-NMGUser.ps1         10/25/2026 9:35:28 AM
+
+
+PS C:\nmg-identity-automation> notepad Documentation\Offboarding-Runbook.md
