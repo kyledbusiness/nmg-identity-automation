@@ -225,6 +225,16 @@ if (-not (Get-ADOrganizationalUnit -Filter "Name -eq 'Disabled Users'" `
     return
 }
 
+#--- EDIT 2: BUILD THE TARGET PATH --------------------------
+# Get-ADDomain hands you the root at runtime, so the path is
+# never hardcoded and the script works in any domain.
+
+$root   = (Get-ADDomain).DistinguishedName
+$target = "OU=Disabled Users,$root"
+
+# Look up where the account is RIGHT NOW. Not earlier.
+$dn = (Get-ADUser -Identity $Username).DistinguishedName
+
 #--- EDIT 3: THE MOVE ---------------------------------------
 # Inside its own ShouldProcess block. A move is reversible,
 # but reversible is not the same as harmless, and anything
@@ -236,18 +246,6 @@ if ($PSCmdlet.ShouldProcess($Username, "Move to Disabled Users")) {
 
     Write-Host "  Moved to quarantine." -ForegroundColor Green
 }
-
-
-#--- EDIT 2: BUILD THE TARGET PATH --------------------------
-# Get-ADDomain hands you the root at runtime, so the path is
-# never hardcoded and the script works in any domain.
-
-$root   = (Get-ADDomain).DistinguishedName
-$target = "OU=Disabled Users,$root"
-
-# Look up where the account is RIGHT NOW. Not earlier.
-$dn = (Get-ADUser -Identity $Username).DistinguishedName
-
 
 #--- SUMMARY ------------------------------------------------
 
