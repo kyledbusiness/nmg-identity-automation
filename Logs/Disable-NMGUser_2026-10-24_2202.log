@@ -1,0 +1,61 @@
+﻿**********************
+Windows PowerShell transcript start
+Start time: 20261024220205
+Username: NMG\NMG-Admin
+RunAs User: NMG\NMG-Admin
+Configuration Name: 
+Machine: NMG-DC02 (Microsoft Windows NT 10.0.26100.0)
+Host Application: C:\Windows\syswow64\WindowsPowerShell\v1.0\PowerShell_ISE.exe
+Process ID: 4916
+PSVersion: 5.1.26100.33648
+PSEdition: Desktop
+PSCompatibleVersions: 1.0, 2.0, 3.0, 4.0, 5.0, 5.1.26100.33648
+BuildVersion: 10.0.26100.33648
+CLRVersion: 4.0.30319.42000
+WSManStackVersion: 3.0
+PSRemotingProtocolVersion: 2.3
+SerializationVersion: 1.1.0.1
+**********************
+
+  DISABLE-NMGUSER
+  Target : dwhitlock
+  Ticket : NMG-0214
+  Run by : NMG-Admin
+
+  All checks passed for Denise Whitlock
+  Captured 2 memberships
+  Verified 2 memberships on disk
+  Disabled and stamped.
+  Removed: Operations-Users
+
+  Removed : 1
+PS>TerminatingError(Move-ADObject): "Cannot validate argument on parameter 'Identity'. The argument is null or an element of the argument collection contains a null value."
+Move-ADObject : Cannot validate argument on parameter 'Identity'. The argument is null or an element of the argument 
+collection contains a null value.
+At C:\nmg-identity-automation\Scripts\Offboard-NMGUser.ps1:235 char:29
++     Move-ADObject -Identity $dn -TargetPath $target
++                             ~~~
+    + CategoryInfo          : InvalidData: (:) [Move-ADObject], ParameterBindingValidationException
+    + FullyQualifiedErrorId : 
+ParameterArgumentValidationError,Microsoft.ActiveDirectory.Management.Commands.MoveADObject
+Move-ADObject : Cannot validate argument on parameter 'Identity'. The argument is null or an element of the argument collection contains a
+null value.
+At C:\nmg-identity-automation\Scripts\Offboard-NMGUser.ps1:235 char:29
++     Move-ADObject -Identity $dn -TargetPath $target
++                             ~~~
+    + CategoryInfo          : InvalidData: (:) [Move-ADObject], ParameterBindingValidationException
+    + FullyQualifiedErrorId : ParameterArgumentValidationError,Microsoft.ActiveDirectory.Management.Commands.MoveADObject
+
+  Moved to quarantine.
+
+  Account  : Denise Whitlock (dwhitlock)
+  Ticket   : NMG-0214
+  Enabled  : False
+  Groups   : 0
+  Location : CN=Denise Whitlock,OU=Operations,DC=NMG,DC=com
+  Evidence : C:\Reports\Offboarding
+
+**********************
+Windows PowerShell transcript end
+End time: 20261024220206
+**********************
