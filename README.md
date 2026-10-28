@@ -141,7 +141,6 @@ any change at all, and tells you why.
 | ticket should look like NMG-0000 | The ticket format is wrong | Use the full four digit form |
 | export file is empty | The record could not be written | Check the reports folder exists and is writable |
 | Disabled Users OU not found | The destination is missing | Steps 1 to 4 completed. Move the account by hand |
-
 | not a username | An ID or a display name in the username column | Correct it at source, or drop the row |
 | duplicate of row N | Same person listed twice | No action. Handled at row N |
 | STILL EMPLOYED | The person appears to still work here | Do not proceed. Ask the Privacy Officer |
