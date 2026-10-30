@@ -1,189 +1,302 @@
-# NMG Identity Automation with Powershell
 
-PowerShell tooling for identity lifecycle management, built for a fictional health enterprise named
-Northstar Medical Group.
+# NMG Identity Automation with PowerShell
+
+**Walkthrough video:** [Watch the 5-minute project breakdown](https://www.loom.com/share/66d6e15db1c145ba81572b71c376e5dc)
+
+
+**What happens when employees leave, but their Active Directory accounts don't?**
+
+At Northstar Medical Group, a fictional healthcare organization, an offboarding process depended on one HR employee emailing IT whenever someone left. When she retired, those notifications stopped. For over 100 days, nobody realized the process had broken down.
+
+The result? **23 former employees with lingering accounts, an 11-hour manual investigation, and an identity security problem that needed more than another spreadsheet.**
+
+This project documents how I used PowerShell to build an identity offboarding workflow that identifies stale accounts, validates separation records, automates access removal, and preserves evidence for auditing and recovery.
+
 
 ## The Problem
 
-Northstar had no consistent and reliable way to identify user accounts belonging
-to people who no longer worked there. The offboarding process was made up of a single employee who notified IT by email when someone left.
-When she retired, the notifications stopped, and nobody noticed for over 100 days.
+Northstar's offboarding process had a single point of failure: one person was responsible for notifying IT about employee departures.
 
-A manual search identified 23 stale accounts and took 11 hours
-across 4 days. It could not identify accounts belonging to people whose
-separation was never recorded, contractors who were never on payroll,
-or service accounts that were never people at all.
+When that process stopped, former employees could retain access long after their employment ended.
 
-## The Approach
+A manual investigation eventually identified 23 stale accounts, but it took 11 hours across four days. Worse, the investigation relied on HR records that could be incomplete.
 
-Rather than comparing directory records against payroll records, these
-tools search the domain controller directly for the last authentication
-date of every single account. That value does not depend on paperwork being
-filed correctly or names matching between systems.
+That meant several types of accounts could still slip through:
 
-## Before you start
+- Former employees whose departures were never recorded.
+- Contractors who were never listed in payroll.
+- Service accounts that were never associated with employees.
 
-- Windows Server with the ActiveDirectory PowerShell module
+**The bigger issue wasn't just forgotten accounts. It was the lack of a reliable process to identify, review, and remove access.**
 
-      Import-Module ActiveDirectory
+## The Solution
 
-- Rights to modify user objects in the domain
-- An authorising ticket number, in the form NMG-0000
-- A Disabled Users OU at the root of the domain
-- A writable reports folder. Create it if it does not exist:
+Rather than relying exclusively on HR records, I built PowerShell tools that query Active Directory directly to identify accounts with no recent authentication activity.
 
-      New-Item -Path "C:\Reports\Offboarding" -ItemType Directory -Force
+But identifying stale accounts was only the beginning.
 
-## Tools
+The workflow needed to answer several questions:
 
-### Find-StaleAccounts.ps1
+1. Which accounts appear inactive but are still enabled?
+2. Which accounts are actually approved for offboarding?
+3. How do we prevent the wrong account from being modified?
+4. What happens if an offboarding operation fails halfway through?
+5. Can we prove what access was removed, when, and under which authorization?
 
-This tool identifies enabled accounts that have not authenticated within a given
-number of days, including accounts that have never authenticated in the first place.
-Exports a timestamped CSV along with a summary recording the exact query used.
+The result is a five-tool workflow covering discovery, individual offboarding, status reporting, bulk validation, and bulk execution.
 
-    .\Find-StaleAccounts.ps1
-    .\Find-StaleAccounts.ps1 -Days 30
-    .\Find-StaleAccounts.ps1 -Days 180 -IncludeDisabled
+## The Tools
 
-| Parameter | Type | Default | Description |
+### 1. Find-StaleAccounts.ps1
+
+**Find the accounts nobody is checking.**
+
+This script queries Active Directory for enabled accounts that haven't authenticated within a configurable timeframe. It also catches accounts with no recorded logon history, which a date-only filter could miss.
+
+Instead of manually reviewing accounts one by one, it produces a report that can be investigated and reproduced.
+
+**Example usage:**
+
+```powershell
+.\Find-StaleAccounts.ps1
+.\Find-StaleAccounts.ps1 -Days 30
+.\Find-StaleAccounts.ps1 -Days 180 -IncludeDisabled
+```
+
+| Parameter | Type | Default | Purpose |
 |---|---|---|---|
-| `-Days` | int | 90 | Days without authentication before an account is considered stale |
-| `-ReportPath` | string | C:\Reports | Where reports are written |
-| `-IncludeDisabled` | switch | off | Include disabled accounts in results |
+| `-Days` | int | 90 | Inactivity threshold |
+| `-ReportPath` | string | `C:\Reports` | Report destination |
+| `-IncludeDisabled` | switch | Off | Include disabled accounts |
 
-**Output:** a timestamped CSV of findings, and a summary file recording
-the question that produced them so the report can be reproduced.
+**Evidence generated:** A timestamped CSV containing the findings and a summary documenting the query used.
 
-### Offboard-NMGUser.ps1
+### 2. Offboard-NMGUser.ps1
 
-Performs all five steps of SOP-IAM-001 against a single account.
-Documents the account and its group memberships, verifies that
-record on disk, disables the account, stamps the authorising
-ticket, removes all group memberships, and moves the account to
-the Disabled Users OU.
+**Remove access without losing the evidence.**
 
-    .\Offboard-NMGUser.ps1 -Username "jdoe" -Ticket "NMG-0214" -WhatIf
-    .\Offboard-NMGUser.ps1 -Username "jdoe" -Ticket "NMG-0214"
+Finding a stale account doesn't automatically mean it should be disabled. Before taking action, the script checks that the account exists, is enabled, appears to belong to a person, and has a correctly formatted authorization ticket.
 
-| Parameter | Type | Default | Description |
+Once those checks pass, it follows SOP-IAM-001 to document the account and its group memberships, verify the evidence was saved, disable the account, record the ticket, remove group memberships, and move the account into the Disabled Users OU.
+
+The sequence matters. **You need to know what access existed before removing it, especially if something goes wrong.**
+
+**Example usage:**
+
+```powershell
+.\Offboard-NMGUser.ps1 -Username "jdoe" -Ticket "NMG-0214" -WhatIf
+
+.\Offboard-NMGUser.ps1 -Username "jdoe" -Ticket "NMG-0214"
+```
+
+| Parameter | Type | Default | Purpose |
 |---|---|---|---|
-| `-Username` | string | required | SamAccountName of the account to offboard |
-| `-Ticket` | string | required | Authorising ticket, in the form NMG-0000 |
-| `-ReportPath` | string | C:\Reports\Offboarding | Where evidence files are written |
-| `-LogPath` | string | Logs\ | Where the run transcript is written |
-| `-WhatIf` | switch | off | Runs every check and changes nothing |
+| `-Username` | string | Required | Account's SamAccountName |
+| `-Ticket` | string | Required | Authorization ticket in NMG-0000 format |
+| `-ReportPath` | string | `C:\Reports\Offboarding` | Evidence destination |
+| `-LogPath` | string | `Logs\` | Transcript destination |
+| `-WhatIf` | switch | Off | Perform checks without making changes |
 
-**Output:** two timestamped CSV files per account recording what
-it was and what it could reach, plus a transcript of the run.
+**Evidence generated:** Two timestamped CSV files documenting the account and its group memberships, plus an execution transcript.
 
-### Get-NMGOffboardingStatus.ps1
+### 3. Get-NMGOffboardingStatus.ps1
 
-Reports how many accounts have been offboarded and quarantined,
-how many are offboarded but not yet moved, and how many are still
-waiting. Takes no parameters and makes no changes of any kind.
+**Answer the question without changing anything.**
 
-    .\Get-NMGOffboardingStatus.ps1
+Not everyone reviewing the offboarding process needs permission to modify accounts.
 
-**Output:** three counts and two named lists, printed to the
-console. Nothing is written to disk.
+This read-only script reports how many accounts have been offboarded and quarantined, how many are offboarded but still awaiting relocation, and how many remain outstanding.
 
-### Invoke-BulkValidation.ps1
+```powershell
+.\Get-NMGOffboardingStatus.ps1
+```
 
-Reads a separations list, cleans a copy, checks every row against
-Active Directory, and writes a report for human review plus an
-approved list for the bulk script. Contains no command that can
-modify an account.
+**Output:** Three counts and two named lists displayed in the console. No files are written, and no account changes are made.
 
-    .\Invoke-BulkValidation.ps1 -InputFile ".\Evidence\<the file>.csv"
+### 4. Invoke-BulkValidation.ps1
 
-| Parameter | Type | Default | Description |
+**Check the list before trusting the list.**
+
+During the challenge, I tested a bulk offboarding process against a 40-row HR separations file. The initial unvalidated run reported zero failures, yet seven accounts belonging to people who weren't leavers were modified.
+
+The problem wasn't execution speed. It was allowing unverified input to drive account changes.
+
+This script separates validation from execution. It reads the original HR file, cleans a copy, checks each row against Active Directory, and generates findings for human review.
+
+**It contains no commands that modify user accounts.**
+
+```powershell
+.\Invoke-BulkValidation.ps1 -InputFile ".\Evidence\<the file>.csv"
+```
+
+| Parameter | Type | Default | Purpose |
 |---|---|---|---|
-| `-InputFile` | string | required | The separations file, as received. Never modified |
-| `-OutputPath` | string | C:\Reports\Separations | Where the cleaned copy, report and approved list go |
+| `-InputFile` | string | Required | Original separations file, never modified |
+| `-OutputPath` | string | `C:\Reports\Separations` | Validation output destination |
 
-**Output:** `Separations_dropped.csv`, `Validation-Report.txt`,
-and `Approved.csv`. The report is for a person. The approved list
-is for the bulk script.
+**Output files:**
 
-### Invoke-BulkOffboarding.ps1
+- `Separations_dropped.csv` — cleaned separation records.
+- `Validation-Report.txt` — findings for human review.
+- `Approved.csv` — validated candidate list for the bulk workflow.
 
-Runs all five steps of SOP-IAM-001 against every account on an
-approved list. Each account is atomic: it completes or is rolled
-back. Every outcome is written to disk the moment it is known.
-Stops after 3 consecutive failures.
+The validation results still require authorization before execution. A correctly formatted account can still belong to someone who is actively employed.
 
-    .\Invoke-BulkOffboarding.ps1 -ApprovedList ".\Evidence\Approved.csv" -Ticket "NMG-0000" -WhatIf
-    .\Invoke-BulkOffboarding.ps1 -ApprovedList ".\Evidence\Approved.csv" -Ticket "NMG-0000"
+### 5. Invoke-BulkOffboarding.ps1
 
-| Parameter | Type | Default | Description |
+**Offboard approved accounts without losing control of the process.**
+
+Once the separation list has been reviewed and approved, this script executes the offboarding workflow against each account.
+
+Each account is handled as an individual transaction. If a step fails, the script attempts to roll back the account to its previous state.
+
+It also writes results as they occur, rather than waiting until the entire batch finishes. After three consecutive failures, execution stops.
+
+```powershell
+.\Invoke-BulkOffboarding.ps1 -ApprovedList ".\Evidence\Approved.csv" -Ticket "NMG-0000" -WhatIf
+
+.\Invoke-BulkOffboarding.ps1 -ApprovedList ".\Evidence\Approved.csv" -Ticket "NMG-0000"
+```
+
+| Parameter | Type | Default | Purpose |
 |---|---|---|---|
-| `-ApprovedList` | string | required | The approved list from Invoke-BulkValidation |
-| `-Ticket` | string | NMG-0215 | Authorising ticket, stamped on every account |
-| `-OutputPath` | string | C:\Reports\Offboarding | Where evidence and results are written |
-| `-BreakOn` | string | empty | Test hook. Simulates a failure on matching accounts. Does nothing unless passed |
-| `-WhatIf` | switch | off | Runs every step and changes nothing |
+| `-ApprovedList` | string | Required | Approved list from validation |
+| `-Ticket` | string | `NMG-0215` | Authorization ticket |
+| `-OutputPath` | string | `C:\Reports\Offboarding` | Evidence and results destination |
+| `-BreakOn` | string | Empty | Simulates matching-account failures for testing |
+| `-WhatIf` | switch | Off | Checks execution without making changes |
 
-**Output:** two CSV files per completed account, a `BulkRun_*.csv`
-results file with one line per account, a summary naming every
-account that did not complete, and a transcript in `Logs/`.
+**Evidence generated:** Two CSV files per completed account, a `BulkRun_*.csv` results file, a summary identifying incomplete operations, and an execution transcript.
 
-## When the script refuses
+## Why the Safeguards Matter
 
-A refusal is the tool working correctly. It stops before making
-any change at all, and tells you why.
+One of the biggest lessons from this project was that **a script can execute successfully and still produce the wrong business outcome.**
 
-| Message | What it means | What to do |
+These controls exist for specific reasons:
+
+| Safeguard | Why it matters |
+|---|---|
+| Account existence check | Prevents attempts to modify nonexistent accounts |
+| Already-disabled check | Avoids repeating completed offboarding actions |
+| Service account check | Reduces the risk of treating nonhuman accounts as departing employees |
+| Ticket validation | Requires an authorization reference |
+| Evidence before removal | Preserves account state and group memberships for audit and rollback |
+| `-WhatIf` | Allows execution behavior to be checked before making changes |
+| Separate bulk validation | Prevents unreviewed HR data from directly triggering account changes |
+| Human approval | Catches employment-status errors automated checks may miss |
+| Rollback handling | Attempts to restore an account if offboarding fails partway through |
+| Failure threshold | Stops bulk execution after three consecutive failures |
+
+### When the Scripts Refuse
+
+A refusal isn't necessarily an error. Sometimes it's the control doing exactly what it was designed to do.
+
+| Message | Meaning | Next action |
 |---|---|---|
-| no account named X | The username is wrong, or the account is already gone | Check the spelling in Active Directory |
-| already disabled | Somebody has handled this one before you | Read the description field for the ticket number |
-| looks like a service account | This is not a person | Find the owner. It needs a different procedure |
-| ticket should look like NMG-0000 | The ticket format is wrong | Use the full four digit form |
-| export file is empty | The record could not be written | Check the reports folder exists and is writable |
-| Disabled Users OU not found | The destination is missing | Steps 1 to 4 completed. Move the account by hand |
-| not a username | An ID or a display name in the username column | Correct it at source, or drop the row |
-| duplicate of row N | Same person listed twice | No action. Handled at row N |
-| STILL EMPLOYED | The person appears to still work here | Do not proceed. Ask the Privacy Officer |
-| STRANDED | A step failed and the rollback failed too | Manual review. The account is named in the results file |
+| `no account named X` | Account not found | Verify the username in AD |
+| `already disabled` | Account has already been disabled | Check its description and ticket |
+| `looks like a service account` | Possible nonhuman identity | Identify the owner and use the appropriate process |
+| `ticket should look like NMG-0000` | Invalid ticket format | Supply the four-digit ticket |
+| `export file is empty` | Evidence could not be written | Verify the reports folder and permissions |
+| `Disabled Users OU not found` | Quarantine destination unavailable | Steps 1–4 completed; relocate manually |
+| `not a username` | Invalid username field | Correct or remove the source row |
+| `duplicate of row N` | Duplicate entry | Refer to the original row |
+| `STILL EMPLOYED` | Recent activity suggests the account may still be needed | Hold for Privacy Officer review |
+| `STRANDED` | Operation and rollback both failed | Investigate the named account manually |
 
-## What an offboarding leaves behind
+## Audit Evidence and Recovery
 
-- Two timestamped CSV files per account in `Evidence/`. One
-  records the account, one records every group it could reach.
-- One transcript per run in `Logs/`, naming every membership
-  removed.
-- The authorising ticket number stamped on the account
-  description in Active Directory.
+An offboarding operation shouldn't end with a success message. It should leave enough evidence for someone else to understand what happened.
 
-The CSV of group memberships is the only record that will ever
-exist of what an account could reach beforehand. Active Directory keeps no
-history of a removed memberships.
+The workflow preserves:
 
-## Known limitations
+- **Account evidence:** Timestamped CSV files documenting the account before offboarding.
+- **Access evidence:** Group membership records captured before removal.
+- **Execution evidence:** Transcripts identifying the operations performed.
+- **Authorization evidence:** Ticket numbers recorded in the account description.
+- **Bulk results:** Account-level outcomes identifying completed, rolled-back, and stranded operations.
 
-- Three accounts were offboarded before step 5 was implemented
-  and were moved into the Disabled Users OU manually afterwards.
-  Their logs do not record the move.
-- The service account check matches on a name prefix and a
-  department. An unusually named service account could get past it.
-- STILL EMPLOYED is inferred from a recent logon. It is a signal
-  for a person to check, not a verdict.
+Preserving group memberships before removal is especially important. Without that snapshot, the workflow cannot reliably reconstruct the account's previous access from its current state alone.
+
+This is what makes the evidence useful for both audit review and rollback.
+
+## Getting Started
+
+### Prerequisites
+
+- Windows Server with Active Directory Domain Services.
+- ActiveDirectory PowerShell module.
+- Appropriate permissions to modify user objects.
+- An authorization ticket in `NMG-0000` format.
+- A Disabled Users OU at the domain root.
+- A writable reports directory.
+
+Import the Active Directory module:
+
+```powershell
+Import-Module ActiveDirectory
+```
+
+Create the offboarding reports directory if needed:
+
+```powershell
+New-Item -Path "C:\Reports\Offboarding" -ItemType Directory -Force
+```
+
+Start with the read-only discovery tool:
+
+```powershell
+.\Find-StaleAccounts.ps1
+```
+
+Review the findings and follow the documented approval process before running any account-modifying scripts.
+
+**Important:** These tools were developed and tested in a simulated Active Directory environment. Review and adapt their safeguards, permissions, logging, and recovery procedures before considering use in a production environment.
+
+## Known Limitations
+
+There are a few things this project doesn't fully address yet.
+
+- **Earlier offboarding records:** Three accounts were processed before the fifth step was implemented. They were subsequently moved into the Disabled Users OU manually, so their original execution logs don't record that relocation.
+- **Service account detection:** The check relies on a naming prefix and department information. An unusually named service account could pass the filter.
+- **Employment status:** The `STILL EMPLOYED` flag is inferred from recent authentication activity. It's a reason to investigate, not definitive proof that someone remains employed.
+
+These limitations matter because automated checks are only as reliable as the data and assumptions behind them.
 
 ## Repository Structure
 
-    Scripts/        PowerShell tools
-    Documentation/  Runbooks and process documentation
-    Evidence/       Sample output and verification screenshots
-    Logs/           Execution logs
+```text
+nmg-identity-automation/
+│
+├── Scripts/
+│   └── PowerShell automation tools
+│
+├── Documentation/
+│   └── SOPs, runbooks, and process documentation
+│
+├── Evidence/
+│   └── Sample reports and verification screenshots
+│
+├── Logs/
+│   └── Execution transcripts
+│
+└── README.md
+```
 
-## Environment
+## Final Takeaway
 
-Windows Server with Active Directory Domain Services.
-Requires the ActiveDirectory PowerShell module.
+I started this challenge learning how to query Active Directory with PowerShell. By the end, I had built an offboarding workflow that could identify inactive accounts, validate separation records, process approved removals, handle failures, and produce supporting evidence.
 
-## About
+The most valuable lesson wasn't how quickly PowerShell could disable accounts.
 
-Built during the TotalThreat 30-Day Challenge in a simulated
-healthcare environment.
+**It was learning that identity automation needs to be safe, explainable, recoverable, and verifiable.**
 
-Author: Kyle Davis
+A successful script run isn't the same thing as a successful security process.
+
+---
+
+**Author:** Kyle Davis
+
+**Project:** TotalThreat 30-Day IAM Challenge
+
+**Environment:** Simulated healthcare organization, Northstar Medical Group
