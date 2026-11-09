@@ -1,8 +1,8 @@
 
 # NMG Identity Automation with PowerShell
 
-**Walkthrough video:** [Watch the 5-minute project breakdown](https://www.loom.com/share/66d6e15db1c145ba81572b71c376e5dc)
-
+## Video Walkthrough
+[Watch the 5-minute project breakdown](https://www.loom.com/share/66d6e15db1c145ba81572b71c376e5dc)
 
 **What happens when employees leave, but their Active Directory accounts don't?**
 
